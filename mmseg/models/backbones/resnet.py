@@ -101,6 +101,8 @@ class BasicBlock(BaseModule):
         self.stride = stride
         self.dilation = dilation
         self.with_cp = with_cp
+        self.cbam = CBAM(out_channels, ratio=cbam_ratio, kernel_size=cbam_kernel_size)
+
 
     @property
     def norm1(self):
@@ -129,7 +131,7 @@ class BasicBlock(BaseModule):
                 identity = self.downsample(x)
 
             out += identity
-
+            out = self.cbam(out)
             return out
 
         if self.with_cp and x.requires_grad:
@@ -184,6 +186,7 @@ class Bottleneck(BaseModule):
         self.with_dcn = dcn is not None
         self.plugins = plugins
         self.with_plugins = plugins is not None
+        self.cbam = CBAM(out_channels * self.expansion, ratio=cbam_ratio, kernel_size=cbam_kernel_size)
 
         if self.with_plugins:
             # collect plugins for conv1/conv2/conv3
@@ -340,6 +343,7 @@ class Bottleneck(BaseModule):
                 identity = self.downsample(x)
 
             out += identity
+            out = self.cbam(out)
 
             return out
 
@@ -463,11 +467,14 @@ class ResNet(BaseModule):
                  with_cp=False,
                  zero_init_residual=True,
                  pretrained=None,
-                 init_cfg=None):
+                 init_cfg=None,
+                 cbam_ratio = 8,
+                 cbam_kernel_size = 7):
         super().__init__(init_cfg)
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
-
+        self.cbam_ratio = cbam_ratio
+        self.cbam_kernel_size = cbam_kernel_size
         self.pretrained = pretrained
         self.zero_init_residual = zero_init_residual
         block_init_cfg = None
@@ -627,7 +634,10 @@ class ResNet(BaseModule):
 
     def make_res_layer(self, **kwargs):
         """Pack all blocks in a stage into a ``ResLayer``."""
-        return ResLayer(**kwargs)
+        res_layer = ResLayer(**kwargs)
+        in_channels = kwargs['planes'] * self.block.expansion
+        res_layer.add_module('cbam', CBAM(in_channels, self.cbam_ratio, self.cbam_kernel_size))
+        return res_layer
 
     @property
     def norm1(self):
