@@ -101,6 +101,7 @@ class BasicBlock(BaseModule):
         self.stride = stride
         self.dilation = dilation
         self.with_cp = with_cp
+        out_channels = planes
         self.cbam = CBAM(out_channels, ratio=cbam_ratio, kernel_size=cbam_kernel_size)
 
 
@@ -186,6 +187,7 @@ class Bottleneck(BaseModule):
         self.with_dcn = dcn is not None
         self.plugins = plugins
         self.with_plugins = plugins is not None
+        out_channels = planes
         self.cbam = CBAM(out_channels * self.expansion, ratio=cbam_ratio, kernel_size=cbam_kernel_size)
 
         if self.with_plugins:
