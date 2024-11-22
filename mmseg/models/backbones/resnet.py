@@ -74,7 +74,9 @@ class BasicBlock(BaseModule):
                  norm_cfg=dict(type='BN'),
                  dcn=None,
                  plugins=None,
-                 init_cfg=None):
+                 init_cfg=None
+                 cbam_ratio = 8,
+                 cbam_kernel_size = 7):
         super().__init__(init_cfg)
         assert dcn is None, 'Not implemented yet.'
         assert plugins is None, 'Not implemented yet.'
@@ -166,7 +168,9 @@ class Bottleneck(BaseModule):
                  norm_cfg=dict(type='BN'),
                  dcn=None,
                  plugins=None,
-                 init_cfg=None):
+                 init_cfg=None
+                 cbam_ratio = 8,
+                 cbam_kernel_size = 7):
         super().__init__(init_cfg)
         assert style in ['pytorch', 'caffe']
         assert dcn is None or isinstance(dcn, dict)
