@@ -74,7 +74,7 @@ class BasicBlock(BaseModule):
                  norm_cfg=dict(type='BN'),
                  dcn=None,
                  plugins=None,
-                 init_cfg=None
+                 init_cfg=None,
                  cbam_ratio = 8,
                  cbam_kernel_size = 7):
         super().__init__(init_cfg)
@@ -168,7 +168,7 @@ class Bottleneck(BaseModule):
                  norm_cfg=dict(type='BN'),
                  dcn=None,
                  plugins=None,
-                 init_cfg=None
+                 init_cfg=None,
                  cbam_ratio = 8,
                  cbam_kernel_size = 7):
         super().__init__(init_cfg)
