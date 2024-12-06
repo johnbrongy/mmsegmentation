@@ -130,11 +130,12 @@ class BasicBlock(BaseModule):
             out = self.conv2(out)
             out = self.norm2(out)
 
+            out = self.cbam(out)
+            
             if self.downsample is not None:
                 identity = self.downsample(x)
 
             out += identity
-            out = self.cbam(out)
             return out
 
         if self.with_cp and x.requires_grad:
@@ -342,6 +343,9 @@ class Bottleneck(BaseModule):
             out = self.conv3(out)
             out = self.norm3(out)
 
+            out = self.cbam(out)
+
+
             if self.with_plugins:
                 out = self.forward_plugin(out, self.after_conv3_plugin_names)
 
@@ -349,8 +353,6 @@ class Bottleneck(BaseModule):
                 identity = self.downsample(x)
 
             out += identity
-            out = self.cbam(out)
-
             return out
 
         if self.with_cp and x.requires_grad:
