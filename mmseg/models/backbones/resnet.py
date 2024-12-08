@@ -103,10 +103,21 @@ class BasicBlock(BaseModule):
         self.stride = stride
         self.dilation = dilation
         self.with_cp = with_cp
-        out_channels = planes
+        out_channels = planes 
         self.cbam = CBAM(out_channels, ratio=cbam_ratio, kernel_size=cbam_kernel_size)
-
+        self._initialise_cbam_weights()
         self.is_cbam = True
+
+    def _initialise_cbam_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.constant_(m.bias, 0)
+        
 
 
     @property
@@ -194,8 +205,20 @@ class Bottleneck(BaseModule):
         self.with_dcn = dcn is not None
         self.plugins = plugins
         self.with_plugins = plugins is not None
-        out_channels = planes
-        self.cbam = CBAM(out_channels * self.expansion, ratio=cbam_ratio, kernel_size=cbam_kernel_size)
+        out_channels = planes * self.expansion
+        self.cbam = CBAM(out_channels, ratio=cbam_ratio, kernel_size=cbam_kernel_size)
+        self._initialise_cbam_weights()
+        self.is_cbam = True
+
+    def _initialise_cbam_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.constant_(m.bias, 0)
 
         self.is_cbam = True
 
