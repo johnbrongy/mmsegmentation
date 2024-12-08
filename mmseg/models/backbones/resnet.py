@@ -764,6 +764,16 @@ class ResNetV1c(ResNet):
     def __init__(self, **kwargs):
         super().__init__(deep_stem=True, avg_down=False, **kwargs)
 
+    def initialize_cbam_weights(m):
+        if isinstance(m, nn.Conv2d):
+            nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+        elif isinstance(m, nn.Linear):
+            nn.init.normal_(m.weight, mean=0, std=0.01)
+            nn.init.constant_(m.bias, 0)
+    
+    model.apply(initialize_cbam_weights)
+
+
 
 
 
