@@ -210,18 +210,6 @@ class Bottleneck(BaseModule):
         self._initialise_cbam_weights()
         self.is_cbam = True
 
-    def _initialise_cbam_weights(self):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-                if m.bias is not None:
-                    nn.init.constant_(m.bias, 0)
-            elif isinstance(m, nn.Linear):
-                nn.init.normal_(m.weight, 0, 0.01)
-                nn.init.constant_(m.bias, 0)
-
-        self.is_cbam = True
-
         if self.with_plugins:
             # collect plugins for conv1/conv2/conv3
             self.after_conv1_plugins = [
@@ -301,6 +289,16 @@ class Bottleneck(BaseModule):
                 planes, self.after_conv2_plugins)
             self.after_conv3_plugin_names = self.make_block_plugins(
                 planes * self.expansion, self.after_conv3_plugins)
+
+    def _initialise_cbam_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.constant_(m.bias, 0)
 
     def make_block_plugins(self, in_channels, plugins):
         """make plugins for block.
