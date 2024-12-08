@@ -643,8 +643,6 @@ class ResNet(BaseModule):
     def make_res_layer(self, **kwargs):
         """Pack all blocks in a stage into a ``ResLayer``."""
         res_layer = ResLayer(**kwargs)
-        in_channels = kwargs['planes'] * self.block.expansion
-        res_layer.add_module('cbam', CBAM(in_channels, self.cbam_ratio, self.cbam_kernel_size))
         return res_layer
 
     @property
