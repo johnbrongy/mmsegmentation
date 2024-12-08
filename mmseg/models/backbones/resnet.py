@@ -775,7 +775,7 @@ class ResNetV1c(ResNet):
         
         # Explicitly initialize CBAM weights
         def initialize_cbam_weights(m):
-    """Initialize weights for CBAM layers only."""
+            """Initialize weights for CBAM layers only."""
             if hasattr(m, 'is_cbam') and m.is_cbam:  # Custom attribute to identify CBAM layers
                 if isinstance(m, nn.Conv2d):
                     nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
