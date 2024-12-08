@@ -764,32 +764,11 @@ class ResNetV1c(ResNet):
     def __init__(self, **kwargs):
         super().__init__(deep_stem=True, avg_down=False, **kwargs)
 
-    def init_weights(self, pretrained=None):
-        """Initialize weights for the ResNetV1c backbone, including CBAM."""
-        if isinstance(pretrained, str):
-            # Load pretrained weights with strict=False
-            load_checkpoint(self, pretrained, strict=False, logger=None)
-            print("Pre-trained weights loaded with strict=False.")
-        elif pretrained is None:
-            print("No pre-trained weights provided. Initializing randomly.")
+
+
+
+
         
-        # Explicitly initialize CBAM weights
-        def initialize_cbam_weights(m):
-            """Initialize weights for CBAM layers only."""
-            if hasattr(m, 'is_cbam') and m.is_cbam:  # Custom attribute to identify CBAM layers
-                if isinstance(m, nn.Conv2d):
-                    nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-                    if m.bias is not None:
-                        nn.init.constant_(m.bias, 0)
-                elif isinstance(m, nn.Linear):
-                    nn.init.normal_(m.weight, 0, 0.01)
-                    nn.init.constant_(m.bias, 0)
-
-
-
-        # Apply initialization to CBAM layers
-        self.apply(initialize_cbam_weights)
-
 
 @MODELS.register_module()
 class ResNetV1d(ResNet):
