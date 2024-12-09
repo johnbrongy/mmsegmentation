@@ -4,7 +4,7 @@ optim_wrapper = dict(type='OptimWrapper', optimizer=optimizer, clip_grad=None)
 # learning policy
 param_scheduler = [
     dict(
-        type='PolyLR',
+        type='CosineAnnealingLR',
         eta_min=1e-4,
         power=0.9,
         begin=0,
