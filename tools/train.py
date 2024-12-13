@@ -17,15 +17,21 @@ from mmseg.registry import RUNNERS
 
 def check_image_validity(dataset):
     invalid_count = 0  # Initialize counter for invalid images
+    invalid_images = []  # To store names of invalid images
     for idx, data in enumerate(dataset):
-        img = data['img']
-        if img is None:
-            print(f"Invalid image at index {idx}")
+        try:
+            img = data['img']
+            if img is None:
+                raise ValueError(f"Image data is None for index {idx}")
+            print(f"Image {idx} is valid.")  # Image is valid, process normally
+        except Exception as e:
             invalid_count += 1  # Increment the counter for invalid images
-        else:
-            print(f"Image {idx} is valid.")
+            print(f"Error with image at index {idx}: {e}")
+            invalid_images.append(data['img_path'])  # Add the filename to invalid images list
     
     print(f"Total invalid images: {invalid_count}")  # Print the total count of invalid images
+    if invalid_images:
+        print("Invalid images list:", invalid_images)
 
 # Load configuration file (your training config file)
 cfg = Config.fromfile('configs/_base_/datasets/cityscapes.py')
@@ -35,7 +41,6 @@ dataset = build_dataset(cfg.data.train)
 
 # Check validity of all images in the dataset before training
 check_image_validity(dataset)
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a segmentor')
