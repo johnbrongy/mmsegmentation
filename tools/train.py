@@ -6,7 +6,6 @@ import os.path as osp
 import cv2
 import mmcv
 import numpy as np
-from mmcv import Config
 
 from mmengine.config import Config, DictAction
 from mmengine.logging import print_log
