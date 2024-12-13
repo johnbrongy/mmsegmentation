@@ -3,6 +3,24 @@ import argparse
 import logging
 import os
 import os.path as osp
+import cv2
+
+original_imfrombytes = mmcv.imfrombytes
+
+def debug_imfrombytes(content, flag='color', backend=None):
+    if content is None or len(content) == 0:
+        print("Error: Empty image buffer encountered!")
+        return None
+    try:
+        img = cv2.imdecode(np.frombuffer(content, np.uint8), cv2.IMREAD_COLOR)
+        if img is None:
+            print("Error: cv2.imdecode returned None!")
+        return img
+    except Exception as e:
+        print(f"Exception during imdecode: {e}")
+        return None
+
+mmcv.imfrombytes = debug_imfrombytes
 
 from mmengine.config import Config, DictAction
 from mmengine.logging import print_log
