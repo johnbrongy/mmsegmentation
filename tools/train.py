@@ -4,6 +4,7 @@ import logging
 import os
 import os.path as osp
 import cv2
+import mmcv
 
 original_imfrombytes = mmcv.imfrombytes
 
