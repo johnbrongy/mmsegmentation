@@ -6,7 +6,7 @@ import os.path as osp
 import cv2
 import mmcv
 import numpy as np
-from mmengine.dataset import build_dataset
+from mmengine.dataset import Dataset
 from mmcv import Config
 
 from mmengine.config import Config, DictAction
@@ -16,30 +16,32 @@ from mmengine.runner import Runner
 from mmseg.registry import RUNNERS
 
 def check_image_validity(dataset):
-    invalid_count = 0  # Initialize counter for invalid images
-    invalid_images = []  # To store names of invalid images
-    for idx, data in enumerate(dataset):
+    invalid_count = 0  # Counter for invalid images
+    invalid_images = []  # To store paths of invalid images
+    for data in dataset:
+        img_path = data['img_path']
         try:
-            img = data['img']
+            img = mmcv.imread(img_path)  # Using mmcv to read image
             if img is None:
-                raise ValueError(f"Image data is None for index {idx}")
-            print(f"Image {idx} is valid.")  # Image is valid, process normally
+                raise ValueError(f"Image data is None: {img_path}")
+            print(f"Image {img_path} is valid.")
         except Exception as e:
-            invalid_count += 1  # Increment the counter for invalid images
-            print(f"Error with image at index {idx}: {e}")
-            invalid_images.append(data['img_path'])  # Add the filename to invalid images list
-    
-    print(f"Total invalid images: {invalid_count}")  # Print the total count of invalid images
+            invalid_count += 1  # Increment invalid image counter
+            print(f"Error with image {img_path}: {e}")
+            invalid_images.append(img_path)  # Log the invalid image
+
+    # Print the results
+    print(f"Total invalid images: {invalid_count}")
     if invalid_images:
-        print("Invalid images list:", invalid_images)
+        print("Invalid images:", invalid_images)
 
-# Load configuration file (your training config file)
-cfg = Config.fromfile('configs/_base_/datasets/cityscapes.py')
+# Load the config file that contains dataset information
+cfg = Config.fromfile('configs/_base_/datasets/cityscapes.py.py')  # Adjust the path to your config
 
-# Build the dataset from config (this example checks the training dataset)
-dataset = build_dataset(cfg.data.train)
+# Build the dataset using the config (training dataset in this case)
+dataset = Dataset.from_cfg(cfg.data.train)  # Adjust this based on how your config is structured
 
-# Check validity of all images in the dataset before training
+# Check image validity before training
 check_image_validity(dataset)
 
 def parse_args():
