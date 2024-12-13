@@ -6,29 +6,35 @@ import os.path as osp
 import cv2
 import mmcv
 import numpy as np
-
-original_imfrombytes = mmcv.imfrombytes
-
-def debug_imfrombytes(content, flag='color', backend=None):
-    if content is None or len(content) == 0:
-        print("Error: Empty image buffer encountered!")
-        return None
-    try:
-        img = cv2.imdecode(np.frombuffer(content, np.uint8), cv2.IMREAD_COLOR)
-        if img is None:
-            print("Error: cv2.imdecode returned None!")
-        return img
-    except Exception as e:
-        print(f"Exception during imdecode: {e}")
-        return None
-
-mmcv.imfrombytes = debug_imfrombytes
+from mmengine.dataset import build_dataset
+from mmcv import Config
 
 from mmengine.config import Config, DictAction
 from mmengine.logging import print_log
 from mmengine.runner import Runner
 
 from mmseg.registry import RUNNERS
+
+def check_image_validity(dataset):
+    invalid_count = 0  # Initialize counter for invalid images
+    for idx, data in enumerate(dataset):
+        img = data['img']
+        if img is None:
+            print(f"Invalid image at index {idx}")
+            invalid_count += 1  # Increment the counter for invalid images
+        else:
+            print(f"Image {idx} is valid.")
+    
+    print(f"Total invalid images: {invalid_count}")  # Print the total count of invalid images
+
+# Load configuration file (your training config file)
+cfg = Config.fromfile('configs/_base_/datasets/cityscapes.py')
+
+# Build the dataset from config (this example checks the training dataset)
+dataset = build_dataset(cfg.data.train)
+
+# Check validity of all images in the dataset before training
+check_image_validity(dataset)
 
 
 def parse_args():
