@@ -6,7 +6,6 @@ import os.path as osp
 import cv2
 import mmcv
 import numpy as np
-from mmengine.dataset import Dataset
 from mmcv import Config
 
 from mmengine.config import Config, DictAction
@@ -14,35 +13,6 @@ from mmengine.logging import print_log
 from mmengine.runner import Runner
 
 from mmseg.registry import RUNNERS
-
-def check_image_validity(dataset):
-    invalid_count = 0  # Counter for invalid images
-    invalid_images = []  # To store paths of invalid images
-    for data in dataset:
-        img_path = data['img_path']
-        try:
-            img = mmcv.imread(img_path)  # Using mmcv to read image
-            if img is None:
-                raise ValueError(f"Image data is None: {img_path}")
-            print(f"Image {img_path} is valid.")
-        except Exception as e:
-            invalid_count += 1  # Increment invalid image counter
-            print(f"Error with image {img_path}: {e}")
-            invalid_images.append(img_path)  # Log the invalid image
-
-    # Print the results
-    print(f"Total invalid images: {invalid_count}")
-    if invalid_images:
-        print("Invalid images:", invalid_images)
-
-# Load the config file that contains dataset information
-cfg = Config.fromfile('configs/_base_/datasets/cityscapes.py.py')  # Adjust the path to your config
-
-# Build the dataset using the config (training dataset in this case)
-dataset = Dataset.from_cfg(cfg.data.train)  # Adjust this based on how your config is structured
-
-# Check image validity before training
-check_image_validity(dataset)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a segmentor')
