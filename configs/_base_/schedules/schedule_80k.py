@@ -1,5 +1,5 @@
 # optimizer
-optimizer = dict(type='AdamW', lr=0.005, momentum=0.9, weight_decay=0.001)
+optimizer = dict(type='AdamW', lr=0.005, weight_decay=0.001)
 optim_wrapper = dict(type='OptimWrapper', optimizer=optimizer, clip_grad=dict(max_norm=35, norm_type=2))
 # learning policy
 
