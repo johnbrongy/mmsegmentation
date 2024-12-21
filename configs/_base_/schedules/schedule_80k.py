@@ -1,20 +1,14 @@
 # optimizer
-optimizer = dict(type='AdamW', lr=0.005, weight_decay=0.001)
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.001)
 optim_wrapper = dict(type='OptimWrapper', optimizer=optimizer, clip_grad=dict(max_norm=35, norm_type=2))
 # learning policy
 
 param_scheduler = [
     dict(
-        type='LinearLR',  # Warm-up for the first 1000 iterations
-        start_factor=0.001,
-        begin=0,
-        end=1000,
-        by_epoch=False),
-    dict(
         type='PolyLR',
         eta_min=1e-4,
         power=0.9,
-        begin=1000,
+        begin=0,
         end=80000,
         by_epoch=False)
 ]
