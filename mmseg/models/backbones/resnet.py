@@ -183,7 +183,7 @@ class Bottleneck(BaseModule):
                  dcn=None,
                  plugins=None,
                  init_cfg=None,
-                 cbam_ratio = 4,
+                 cbam_ratio = 8,
                  cbam_kernel_size = 7):
         super().__init__(init_cfg)
         assert style in ['pytorch', 'caffe']
