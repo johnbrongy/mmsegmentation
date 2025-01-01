@@ -586,8 +586,6 @@ class ResNet(BaseModule):
                 self.stage_blocks) - 1 else None
             planes = base_channels * 2**i
 
-            # New CBAM Code that is being added
-            # Add CBAM parameters only for stages 3 and 4
 
             if i >= 2:
                 cbam_ratio = self.cbam_ratio
@@ -596,7 +594,6 @@ class ResNet(BaseModule):
                 cbam_ratio = None
                 cbam_kernel_size = None
 
-            # END OF NEW CODE 
             
             res_layer = self.make_res_layer(
                 block=self.block,
