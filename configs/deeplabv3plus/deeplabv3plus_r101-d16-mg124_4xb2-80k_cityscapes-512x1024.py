@@ -6,6 +6,8 @@ model = dict(
         dilations=(1, 1, 1, 2),
         strides=(1, 2, 2, 1),
         multi_grid=(1, 2, 4)),
+        cbam_ratio=8,
+        cbam_kernel_size=7)
     decode_head=dict(
         dilations=(1, 6, 12, 18),
         sampler=dict(type='OHEMPixelSampler', min_kept=100000)))
