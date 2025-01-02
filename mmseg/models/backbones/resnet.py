@@ -183,7 +183,7 @@ class Bottleneck(BaseModule):
                  dcn=None,
                  plugins=None,
                  init_cfg=None,
-                 cbam_ratio = 8,
+                 cbam_ratio = 4,
                  cbam_kernel_size = 7):
         super().__init__(init_cfg)
         assert style in ['pytorch', 'caffe']
@@ -501,7 +501,7 @@ class ResNet(BaseModule):
                  zero_init_residual=True,
                  pretrained=None,
                  init_cfg=None,
-                 cbam_ratio = 8,
+                 cbam_ratio = 4,
                  cbam_kernel_size = 7):
         super().__init__(init_cfg)
         if depth not in self.arch_settings:
