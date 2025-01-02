@@ -1,6 +1,6 @@
 # dataset settings
 dataset_type = 'CityscapesDataset'
-data_root = 'data/cityscapes/cityscapes_natOcc_without_SOT'
+data_root = 'data/cityscapes/cityscapes_natOcc_withoutSOT'
 crop_size = (512, 1024)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
